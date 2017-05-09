@@ -15,7 +15,6 @@ class CustomersController < ApplicationController
     end
   end
 
-
   private
 
 
