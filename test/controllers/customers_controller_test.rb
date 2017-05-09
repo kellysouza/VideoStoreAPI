@@ -38,4 +38,26 @@ describe CustomersController do
       customer.keys.sort.must_equal CUST_KEYS
     end
   end
+
+  describe "Create" do
+    let(:customer_data) {
+      { name: "Jack",
+        address: "1234 Ada Avenue",
+        city: "Seattle",
+        state: "Washington",
+        postal_code: "98100",
+        phone: "6517234456",
+        registered_at: "2017",
+        account_credit: 10
+      }
+    }
+
+    it "Can create a customer" do
+      proc {
+        post customers_url, params: { customer: customer_data }
+      }.must_change 'Customer.count', 1
+      must_respond_with :ok
+      
+    end
+  end
 end
