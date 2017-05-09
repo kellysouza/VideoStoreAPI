@@ -8,5 +8,5 @@ Rails.application.routes.draw do
   post '/customers', to: 'customers#create'
 
 
-  get '/zomg', to: 'application#index', as: 'zomg'
+  # get '/zomg', to: 'application#index', as: 'zomg'
 end
