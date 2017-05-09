@@ -2,7 +2,7 @@ require "test_helper"
 
 describe CustomersController do
 
-  CUST_KEYS = %w(name address city state postal_code phone registered_at account_credit).sort
+  CUST_KEYS = ["account_credit", "address", "city", "id", "movies_checked_out_count", "name", "phone", "postal_code", "registered_at", "state"].sort
 
   describe "index" do
     it "is a real working route" do
