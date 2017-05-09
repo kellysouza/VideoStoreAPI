@@ -48,16 +48,61 @@ describe CustomersController do
         postal_code: "98100",
         phone: "6517234456",
         registered_at: "2017",
-        account_credit: 10
+        account_credit: 10,
+        movies_checked_out_count: 2
       }
     }
 
-    it "Can create a customer" do
+
+    it "Can create a new customer" do
       proc {
         post customers_url, params: { customer: customer_data }
       }.must_change 'Customer.count', 1
       must_respond_with :ok
-      
     end
+
+    it "Won't create a new customer with missing name" do
+      customer_data.delete(:name)
+      proc {
+        post customers_url, params: { customer: customer_data }
+      }.wont_change 'Customer.count'
+      must_respond_with :bad_request
+
+    end
+
+    it "Won't create a new customer with missing registered_at field" do
+      customer_data.delete(:registered_at)
+      proc {
+        post customers_url, params: { customer: customer_data }
+      }.wont_change 'Customer.count'
+      must_respond_with :bad_request
+
+    end
+
+    it "Won't create a new customer with missing phone" do
+      customer_data.delete(:phone)
+      proc {
+        post customers_url, params: { customer: customer_data }
+      }.wont_change 'Customer.count'
+      must_respond_with :bad_request
+    end
+
+    it "Won't create a new customer with missing postal_code" do
+      customer_data.delete(:postal_code)
+      proc {
+        post customers_url, params: { customer: customer_data }
+      }.wont_change 'Customer.count'
+      must_respond_with :bad_request
+    end
+
+    it "Won't create a new customer with missing movies_checked_out_count" do
+      customer_data.delete(:movies_checked_out_count)
+      proc {
+        post customers_url, params: { customer: customer_data }
+      }.wont_change 'Customer.count'
+      must_respond_with :bad_request
+
+    end
+
   end
 end
