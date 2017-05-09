@@ -102,7 +102,15 @@ describe MoviesController do
       must_respond_with :bad_request
     end
 
-    
+    it "Won't create with missing release_date" do
+      movie_data.delete(:release_date)
+      proc {
+        post movies_url, params: {movie: movie_data}
+      }.must_change 'Movie.count', 0
+      must_respond_with :bad_request
+    end
+
+
 
   end
 
