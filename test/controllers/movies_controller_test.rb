@@ -3,7 +3,7 @@ require "test_helper"
 describe MoviesController do
 
 
-KEYS = %w(title overview release_date inventory available_inventory)
+KEYS = %w(title overview release_date inventory available_inventory).sort
 
 describe "index" do
   it "is a working route" do
@@ -21,6 +21,23 @@ describe "index" do
 
     body = JSON.parse(response.body)
     body.must_be_kind_of Array
+  end
+
+  it "returns all of the movies" do
+    get movies_url
+
+    body = JSON.parse(response.body)
+
+    body.length.must_equal Movie.count
+  end
+
+  it "returns movies with the required fields" do
+    get movies_url
+    body = JSON.parse(response.body)
+
+    body.each do |movie|
+      movie.keys.sort.must_equal KEYS
+    end
   end
 
 end
