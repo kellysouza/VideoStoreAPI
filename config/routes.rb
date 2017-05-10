@@ -7,6 +7,9 @@ Rails.application.routes.draw do
   get '/customers', to: 'customers#index', as: 'customers'
   post '/customers', to: 'customers#create'
 
+  post '/rentals/:title/checkout', to: 'rentals#checkout_movie', as: 'checkout'
+  
+
 
   # get '/zomg', to: 'application#index', as: 'zomg'
 end
