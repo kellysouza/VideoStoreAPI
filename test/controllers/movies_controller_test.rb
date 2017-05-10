@@ -55,7 +55,13 @@ describe MoviesController do
       get movie_url("lkasjdpivjdiasd")
       must_respond_with :not_found
       body = JSON.parse(response.body)
-      body.must_equal({"nothing" => true})
+      body["errors"].must_equal( "title" => ["Movie 'lkasjdpivjdiasd' not found"])
+
+
+
+
+
+        # render json:{ errors: { "title": ["Movie '#{params[:title]}' not found"]} }, status: :not_found
     end
 
     it "Movie found has all the correct information" do
