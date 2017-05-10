@@ -1,11 +1,6 @@
 class RentalsController < ApplicationController
 
-  def initailize
-
-
-  end
-
-
+  
   def checkout_movie
     mov_id = Movie.where(title: params[:title]).first.id
     rental = Rental.new(movie_id: mov_id, customer_id: params[:customer_id], due_date: params[:due_date])
