@@ -81,7 +81,7 @@ describe MoviesController do
 
     it "Can create a new movie" do
       proc {
-        post movies_url, params:  movie_data 
+        post movies_url, params:  movie_data
       }.must_change 'Movie.count', 1
       must_respond_with :ok
 
@@ -95,10 +95,10 @@ describe MoviesController do
 
     end
 
-    it "Won't create with missing title" do skip
+    it "Won't create with missing title" do
       movie_data.delete(:title)
       proc {
-        post movies_url, params: {movie: movie_data}
+        post movies_url, params:  movie_data
       }.must_change 'Movie.count', 0
       must_respond_with :bad_request
 
@@ -106,10 +106,10 @@ describe MoviesController do
       body.must_equal "errors" => { "title" => ["can't be blank"] }
     end
 
-    it "Won't create with missing inventory" do skip
+    it "Won't create with missing inventory" do
       movie_data.delete(:inventory)
       proc {
-        post movies_url, params: {movie: movie_data}
+        post movies_url, params:  movie_data
       }.must_change 'Movie.count', 0
       must_respond_with :bad_request
 
@@ -117,10 +117,10 @@ describe MoviesController do
       body.must_equal "errors" => { "inventory" => ["can't be blank", "is not a number"] }
     end
 
-    it "Won't create with missing release_date" do skip
+    it "Won't create with missing release_date" do
       movie_data.delete(:release_date)
       proc {
-        post movies_url, params: {movie: movie_data}
+        post movies_url, params: movie_data
       }.must_change 'Movie.count', 0
       must_respond_with :bad_request
 
