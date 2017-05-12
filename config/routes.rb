@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   post '/customers', to: 'customers#create'
 
   post '/rentals/:title/checkout', to: 'rentals#checkout_movie', as: 'checkout'
-  
+  delete '/rentals/:title/checkin', to: 'rentals#checkin_movie', as: 'checkin'
 
 
   # get '/zomg', to: 'application#index', as: 'zomg'
