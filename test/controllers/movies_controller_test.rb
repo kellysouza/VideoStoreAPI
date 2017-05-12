@@ -3,7 +3,7 @@ require "test_helper"
 describe MoviesController do
 
 
-  KEYS = %w(title overview release_date inventory available_inventory).sort
+  KEYS = %w(title overview release_date inventory available_inventory movie_id customer_id due_date).sort
 
   describe "index" do
     it "is a working route" do

@@ -12,11 +12,19 @@ describe RentalsController do
         title: "time"
       }
     }
+    
     it "creates a new rental with valid data" do
       proc {
         post checkout_path("title"), params: { rental: rental_data }
       }.must_change 'Rental.count', 1
       must_respond_with :ok
     end
+
+    it "won't create a new rental with missing data" do
+      proc {
+      post checkout_path("title"), params: { rental: rental_data }
+    }.wont_change 'Rental.count'
+    must_respond_with :bad_request
   end
+end
 end
