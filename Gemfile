@@ -50,5 +50,6 @@ gem 'foundation-rails'
 group :test do
   gem 'minitest-rails'
   gem 'minitest-reporters'
+  gem 'minitest-skip', '~> 0.0.1'
   gem 'simplecov', :require => false
 end
