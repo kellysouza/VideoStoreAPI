@@ -4,13 +4,23 @@ class RentalsController < ApplicationController
 
   def checkout_movie
     movie =  Movie.where(title: params[:title]).first
+    customer =  Customer.where(id: params[:customer_id])
+
+
     if movie
       mov_id = movie.id
       rental = Rental.new(movie_id: mov_id, customer_id: params[:customer_id], due_date: params[:due_date])
       # debugger
-      movie.find_available_inventory
+      if movie.available_inventory == nil
+        movie.available_inventory = movie.inventory
+        # debugger
+      end
+
       if movie.available_inventory > 0
         if rental.save
+          movie.available_inventory -= 1
+          # customer.movies_checked_out_count += 1
+          # customer.save
           render status: :ok, json: { id: rental.id}
           #update_avail_inventory
         else
@@ -37,19 +47,21 @@ class RentalsController < ApplicationController
       render status: :bad_request, json: { errors: "Rental not found" }
     end
   end
-  
+
   def find_overdue
     rentals = Rental.all
-
     overdue = []
-
-    rentals.each do |rental|
-      due = Date.parse (rental.due_date)
-      if due.past?
-        overdue << rental
+    if rentals.length > 0
+      rentals.each do |rental|
+        due = Date.parse (rental.due_date)
+        if due.past?
+          overdue << rental
+        end
       end
+      render json: overdue.as_json(only: [:movie_id, :customer_id, :due_date]), status: :ok
+    else
+      render json: { nothing: true }, status: :not_found
     end
-    render json: overdue.as_json(only: [:movie_id, :customer_id, :due_date]), status: :ok
   end
 
 
