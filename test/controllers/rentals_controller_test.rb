@@ -13,11 +13,24 @@ describe RentalsController do
       must_respond_with :ok
     end
 
-    it "won't create a new rental with missing data" do
+    it "won't create a new rental with missing customer" do
       proc {
         post checkout_path(movies(:one).title), params: { customer_id: nil}
       }.wont_change 'Rental.count'
       must_respond_with :bad_request
+
+      body = JSON.parse(response.body)
+      body.must_equal "errors" => { "customer" => ["must exist"] }
+    end
+
+    it "won't create a new rental with missing title" do
+      proc {
+        post checkout_path("title"), params: { customer_id: customers(:one).id }
+      }.wont_change 'Rental.count'
+      must_respond_with :bad_request
+
+      body = JSON.parse(response.body)
+      body.must_equal "errors" => "Movie not found"
     end
 
     it "will checkout a title" do skip

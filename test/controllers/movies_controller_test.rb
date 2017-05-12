@@ -3,7 +3,7 @@ require "test_helper"
 describe MoviesController do
 
 
-  KEYS = %w(title overview release_date inventory available_inventory movie_id customer_id due_date).sort
+  KEYS = ["available_inventory", "inventory", "overview", "release_date", "title"].sort
 
   describe "index" do
     it "is a working route" do
@@ -79,35 +79,44 @@ describe MoviesController do
       }
     }
 
-    it "Can create a new movie" do
+    it "Can create a new movie" do skip
       proc {
         post movies_url, params: {movie: movie_data}
       }.must_change 'Movie.count', 1
       must_respond_with :ok
     end
 
-    it "Won't create with missing title" do
+    it "Won't create with missing title" do skip
       movie_data.delete(:title)
       proc {
         post movies_url, params: {movie: movie_data}
       }.must_change 'Movie.count', 0
       must_respond_with :bad_request
+
+      body = JSON.parse(response.body)
+      body.must_equal "errors" => { "title" => ["can't be blank"] }
     end
 
-    it "Won't create with missing inventory" do
+    it "Won't create with missing inventory" do skip
       movie_data.delete(:inventory)
       proc {
         post movies_url, params: {movie: movie_data}
       }.must_change 'Movie.count', 0
       must_respond_with :bad_request
+
+      body = JSON.parse(response.body)
+      body.must_equal "errors" => { "inventory" => ["can't be blank", "is not a number"] }
     end
 
-    it "Won't create with missing release_date" do
+    it "Won't create with missing release_date" do skip
       movie_data.delete(:release_date)
       proc {
         post movies_url, params: {movie: movie_data}
       }.must_change 'Movie.count', 0
       must_respond_with :bad_request
+
+      body = JSON.parse(response.body)
+      body.must_equal "errors" => { "release_date" => ["can't be blank"] }
     end
 
 
