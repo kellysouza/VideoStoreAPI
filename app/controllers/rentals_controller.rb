@@ -4,8 +4,8 @@ class RentalsController < ApplicationController
 
   def checkout_movie
     movie =  Movie.where(title: params[:title]).first
-    customer =  Customer.where(id: params[:customer_id])
-
+    @customer =  Customer.find_by(id: params[:customer_id])
+    
 
     if movie
       mov_id = movie.id
@@ -19,7 +19,7 @@ class RentalsController < ApplicationController
       if movie.available_inventory > 0
         if rental.save
           movie.available_inventory -= 1
-          customer.movies_checked_out_count += 1
+          @customer.movies_checked_out_count += 1
           render status: :ok, json: { id: rental.id}
           #update_avail_inventory
         else
