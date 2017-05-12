@@ -7,4 +7,11 @@ class Movie < ApplicationRecord
   has_many :rentals
 
 
+
+  def find_available_inventory
+    self.available_inventory = self.inventory - self.rentals.count
+    self.save
+  end
+
+
 end
