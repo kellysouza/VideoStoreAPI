@@ -4,19 +4,23 @@ class RentalsController < ApplicationController
 
   def checkout_movie
     movie =  Movie.where(title: params[:title]).first
-    mov_id = movie.id
-    rental = Rental.new(movie_id: mov_id, customer_id: params[:customer_id], due_date: params[:due_date])
-    # debugger
-    movie.find_available_inventory
-    if movie.available_inventory > 0
-      if rental.save
-        render status: :ok, json: { id: rental.id}
-        #update_avail_inventory
+    if movie
+      mov_id = movie.id
+      rental = Rental.new(movie_id: mov_id, customer_id: params[:customer_id], due_date: params[:due_date])
+      # debugger
+      movie.find_available_inventory
+      if movie.available_inventory > 0
+        if rental.save
+          render status: :ok, json: { id: rental.id}
+          #update_avail_inventory
+        else
+          render status: :bad_request, json: { errors: rental.errors.messages}
+        end
       else
-        render status: :bad_request, json: { errors: rental.errors.messages}
+        render status: :bad_request, json: { errors: "Out of Stock"}
       end
     else
-      render status: :bad_request, json: { errors: "Out of Stock"}
+      render status: :bad_request, json: { errors: "Movie not found"}
     end
   end
 
