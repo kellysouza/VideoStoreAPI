@@ -6,7 +6,6 @@ class RentalsController < ApplicationController
     movie =  Movie.where(title: params[:title]).first
     mov_id = movie.id
     rental = Rental.new(movie_id: mov_id, customer_id: params[:customer_id], due_date: params[:due_date])
-    # debugger
     movie.find_available_inventory
     if movie.available_inventory > 0
       if rental.save
