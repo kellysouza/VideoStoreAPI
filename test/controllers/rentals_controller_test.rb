@@ -46,32 +46,46 @@ describe RentalsController do
       body = JSON.parse(response.body)
       body.must_equal "errors" => "Out of Stock"
     end
-end
 
-describe "checkin_movie" do
+    it "increases customer  movies_checked_out_count when a rental occurs" do
+      customer = customers(:one).id
+      customer.movies_checked_out_count
 
-  it "returns a rental with valid data" do
-    post checkout_path(movies(:one).title), params: { customer_id: (customers(:one).id)
-    }
-
-    proc {
-      delete checkin_path(movies(:one).title), params: { customer_id: (customers(:one).id)
+      post checkout_path(movies(:one).title), params: { customer_id: (customers(:one).id)
       }
-    }.must_change 'Rental.count', -1
-    must_respond_with :ok
+      customer.movies_checked_out_count
+
+    end
+
+    it "decreases movie.available_inventory when rental occurs" do
+
+    end
   end
 
-  it "won't return a rental if not checked out title" do
+  describe "checkin_movie" do
 
-    proc {
-      delete checkin_path(movies(:one).title), params: { customer_id: (customers(:one).id)
+    it "returns a rental with valid data" do
+      post checkout_path(movies(:one).title), params: { customer_id: (customers(:one).id)
       }
-    }.wont_change 'Rental.count'
-    must_respond_with :bad_request
 
-    body = JSON.parse(response.body)
-    body.must_equal "errors" => "Rental not found"
+      proc {
+        delete checkin_path(movies(:one).title), params: { customer_id: (customers(:one).id)
+        }
+      }.must_change 'Rental.count', -1
+      must_respond_with :ok
+    end
+
+    it "won't return a rental if not checked out title" do
+
+      proc {
+        delete checkin_path(movies(:one).title), params: { customer_id: (customers(:one).id)
+        }
+      }.wont_change 'Rental.count'
+      must_respond_with :bad_request
+
+      body = JSON.parse(response.body)
+      body.must_equal "errors" => "Rental not found"
+    end
   end
-end
 
 end
