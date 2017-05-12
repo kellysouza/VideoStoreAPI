@@ -127,9 +127,6 @@ describe MoviesController do
       body = JSON.parse(response.body)
       body.must_equal "errors" => { "release_date" => ["can't be blank"] }
     end
-
-
-
   end
 
 end
