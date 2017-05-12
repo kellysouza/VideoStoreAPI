@@ -11,17 +11,14 @@ class RentalsController < ApplicationController
       mov_id = movie.id
       rental = Rental.new(movie_id: mov_id, customer_id: params[:customer_id], due_date: params[:due_date])
       # debugger
-      if movie.available_inventory == nil
-        movie.available_inventory = movie.inventory
-        # debugger
-      end
-
       if movie.available_inventory > 0
         if rental.save
           movie.available_inventory -= 1
+          movie.save
           @customer.movies_checked_out_count += 1
+          @customer.save
+          # debugger
           render status: :ok, json: { id: rental.id}
-          #update_avail_inventory
         else
           render status: :bad_request, json: { errors: rental.errors.messages}
         end
@@ -34,17 +31,27 @@ class RentalsController < ApplicationController
   end
 
   def checkin_movie
-    mov_id = Movie.where(title: params[:title]).first.id
-    rental = Rental.where(movie_id: mov_id, customer_id: params[:customer_id])
-    if rental.length > 0
-      if rental.first.delete
-        render status: :ok, json: { customer_id: params[:customer_id]}
-      else
-        render status: :bad_request, json: { errors: "Unable to delete" }
-      end
-    else
-      render status: :bad_request, json: { errors: "Rental not found" }
-    end
+
+    movie = Movie.where(title: params[:title]).first
+    movie.available_inventory += 1
+    movie.save
+    customer = Customer.find_by(id: params[:customer_id])
+    customer.movies_checked_out_count -= 1
+    customer.save
+    render status: :ok, json: { customer_id: params[:customer_id]}
+
+
+  #   rental = Rental.where(movie_id: mov_id, customer_id: params[:customer_id])
+  #
+  #   if rental.length > 0
+  #     if rental.first.delete
+  #       render status: :ok, json: { customer_id: params[:customer_id]}
+  #     else
+  #       render status: :bad_request, json: { errors: "Unable to delete" }
+  #     end
+  #   else
+  #     render status: :bad_request, json: { errors: "Rental not found" }
+  #   end
   end
 
   def find_overdue
