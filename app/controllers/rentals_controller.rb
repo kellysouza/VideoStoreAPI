@@ -37,7 +37,7 @@ class RentalsController < ApplicationController
       render status: :bad_request, json: { errors: "Rental not found" }
     end
   end
-
+  
   def find_overdue
     rentals = Rental.all
 
@@ -52,8 +52,6 @@ class RentalsController < ApplicationController
     render json: overdue.as_json(only: [:movie_id, :customer_id, :due_date]), status: :ok
   end
 
-  # due = Date.parse (rental.due_date)
-  # due.past?
 
   private
 
