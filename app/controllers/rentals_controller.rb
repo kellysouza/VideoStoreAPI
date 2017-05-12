@@ -49,7 +49,7 @@ class RentalsController < ApplicationController
         overdue << rental
       end
     end
-    return overdue
+    render json: overdue.as_json(only: [:movie_id, :customer_id, :due_date]), status: :ok
   end
 
   # due = Date.parse (rental.due_date)
