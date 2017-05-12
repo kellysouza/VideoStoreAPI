@@ -79,11 +79,20 @@ describe MoviesController do
       }
     }
 
-    it "Can create a new movie" do skip
+    it "Can create a new movie" do
       proc {
-        post movies_url, params: {movie: movie_data}
+        post movies_url, params:  movie_data 
       }.must_change 'Movie.count', 1
       must_respond_with :ok
+
+
+
+
+    #   post checkout_path(movies(:one).title), params: { customer_id: (customers(:one).id)
+    #   }
+    # }.must_change 'Rental.count', 1
+    # must_respond_with :ok
+
     end
 
     it "Won't create with missing title" do skip
