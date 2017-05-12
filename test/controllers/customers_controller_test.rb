@@ -94,15 +94,5 @@ describe CustomersController do
       }.wont_change 'Customer.count'
       must_respond_with :bad_request
     end
-
-    it "Won't create a new customer with missing movies_checked_out_count" do
-      customer_data.delete(:movies_checked_out_count)
-      proc {
-        post customers_url, params: { customer: customer_data }
-      }.wont_change 'Customer.count'
-      must_respond_with :bad_request
-
-    end
-
   end
 end

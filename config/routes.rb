@@ -10,6 +10,6 @@ Rails.application.routes.draw do
   post '/rentals/:title/checkout', to: 'rentals#checkout_movie', as: 'checkout'
   delete '/rentals/:title/checkin', to: 'rentals#checkin_movie', as: 'checkin'
 
-
+get '/rentals/overdue', to: 'rentals#find_overdue', as: 'overdue'
   # get '/zomg', to: 'application#index', as: 'zomg'
 end

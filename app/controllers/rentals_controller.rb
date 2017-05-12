@@ -38,7 +38,22 @@ class RentalsController < ApplicationController
     end
   end
 
+  def find_overdue
+    rentals = Rental.all
 
+    overdue = []
+
+    rentals.each do |rental|
+      due = Date.parse (rental.due_date)
+      if due.past?
+        overdue << rental
+      end
+    end
+    return overdue
+  end
+
+  # due = Date.parse (rental.due_date)
+  # due.past?
 
   private
 
