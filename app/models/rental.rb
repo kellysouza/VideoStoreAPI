@@ -4,5 +4,4 @@ class Rental < ApplicationRecord
   validates :due_date, presence: true, allow_nil: false
 
 
-
 end
