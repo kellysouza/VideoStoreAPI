@@ -1,17 +1,14 @@
-require 'rental'
-
 class RentalsController < ApplicationController
 
   def checkout_movie
-    movie =  Movie.where(title: params[:title]).first
-    customer =  Customer.find_by(id: params[:customer_id])
-    if movie
-      mov_id = movie.id
-      rental = Rental.new(movie_id: mov_id, customer_id: params[:customer_id], due_date: params[:due_date])
-      # debugger
-      if movie.available_inventory > 0
+    @movie =  Movie.where(title: params[:title]).first
+    @customer =  Customer.find_by(id: params[:customer_id])
+    if @movie
+      rental = Rental.new(movie_id: @movie.id, customer_id: params[:customer_id], due_date: params[:due_date])
+      if @movie.available_inventory > 0
         if rental.save
-          adjust_inventory_out(movie, customer)
+          @customer.adjust_inventory_in
+          @movie.adjust_inventory_out
           render status: :ok, json: { id: rental.id}
         else
           render status: :bad_request, json: { errors: rental.errors.messages}
@@ -25,18 +22,18 @@ class RentalsController < ApplicationController
   end
 
   def checkin_movie
-    movie = Movie.where(title: params[:title]).first
-    customer = Customer.find_by(id: params[:customer_id])
-    if !movie || !customer
+    @movie = Movie.where(title: params[:title]).first
+    @customer = Customer.find_by(id: params[:customer_id])
+    if !@movie || !@customer
       render status: :bad_request, json:
-      if !movie && !customer
+      if !@movie && !@customer
         { errors:
           {
             movie: ["not found"],
             customer: ["not found"]
           }
         }
-      elsif !customer
+      elsif !@customer
         { errors:
           {
             customer: ["not found"]
@@ -50,13 +47,14 @@ class RentalsController < ApplicationController
         }
       end
     else
-      rental = Rental.find_by(movie_id: movie.id, customer_id: params[:customer_id], checkin_date: nil)
+      rental = Rental.find_by(movie_id: @movie.id, customer_id: params[:customer_id], checkin_date: nil)
       if !rental
         render status: :bad_request, json: { errors: { rental: ["not found"]}}
       else
         rental.checkin_date = Time.now
         if rental.save
-          adjust_inventory_in(movie, customer)
+          @movie.adjust_inventory_in
+          @customer.adjust_inventory_out
           render status: :ok, json: { customer_id: params[:customer_id], checkin_date: rental.checkin_date}
         end
       end
@@ -85,24 +83,8 @@ class RentalsController < ApplicationController
 
   private
 
-  def adjust_inventory_in(movie, customer)
-    movie.available_inventory += 1
-    movie.save
-    customer.movies_checked_out_count -= 1
-    customer.save
-  end
-
-  def adjust_inventory_out(movie, customer)
-    movie.available_inventory -= 1
-    movie.save
-    customer.movies_checked_out_count += 1
-    customer.save
-  end
-
-
   def rental_params
     params.permit(:customer_id, :due_date, :title)
-
   end
 
 end

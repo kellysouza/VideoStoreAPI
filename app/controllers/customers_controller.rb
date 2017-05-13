@@ -7,7 +7,6 @@ class CustomersController < ApplicationController
 
   def create
     customer = Customer.new(customer_params)
-
     if customer.save
       render status: :ok, json: { id: customer.id}
     else
@@ -15,8 +14,8 @@ class CustomersController < ApplicationController
     end
   end
 
-  private
 
+  private
 
   def customer_params
     params.require(:customer).permit(:name, :address, :city, :state, :postal_code, :phone, :registered_at, :account_credit, :movies_checked_out_count)
