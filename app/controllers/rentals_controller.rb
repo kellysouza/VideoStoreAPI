@@ -5,8 +5,6 @@ class RentalsController < ApplicationController
   def checkout_movie
     movie =  Movie.where(title: params[:title]).first
     @customer =  Customer.find_by(id: params[:customer_id])
-
-
     if movie
       mov_id = movie.id
       rental = Rental.new(movie_id: mov_id, customer_id: params[:customer_id], due_date: params[:due_date])
@@ -38,7 +36,11 @@ class RentalsController < ApplicationController
     customer = Customer.find_by(id: params[:customer_id])
     customer.movies_checked_out_count -= 1
     customer.save
-    render status: :ok, json: { customer_id: params[:customer_id]}
+    rental = Rental.find_by(movie_id: movie.id, customer_id: params[:customer_id])
+    rental.due_date = "in"
+    if rental.save
+      render status: :ok, json: { customer_id: params[:customer_id]}
+    end
 
 
   #   rental = Rental.where(movie_id: mov_id, customer_id: params[:customer_id])
