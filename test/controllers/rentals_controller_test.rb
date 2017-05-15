@@ -7,10 +7,12 @@ describe RentalsController do
 
     it "creates a new rental with valid data" do
       proc {
-        post checkout_path(movies(:one).title), params: { customer_id: (customers(:one).id)
+        post checkout_path(movies(:one).title), params: { customer_id: (customers(:one).id), due_date: "20170918"
+
         }
       }.must_change 'Rental.count', 1
       must_respond_with :ok
+
     end
 
     it "won't create a new rental with missing customer" do
