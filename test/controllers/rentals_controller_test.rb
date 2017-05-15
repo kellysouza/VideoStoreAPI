@@ -20,7 +20,7 @@ describe RentalsController do
       must_respond_with :bad_request
 
       body = JSON.parse(response.body)
-      body.must_equal "errors" => { "customer" => ["must exist"] }
+      body.must_equal "errors"=>{"customer"=>["must exist"], "due_date"=>["can't be blank"] }
     end
 
     it "won't create a new rental with missing title" do
@@ -33,7 +33,7 @@ describe RentalsController do
       body.must_equal "errors" => "Movie not found"
     end
 
-    it "won't checkout movie if movie is out of stock " do
+    it "won't checkout movie if due date is blank " do
       post checkout_path(movies(:one).title), params: { customer_id: (customers(:one).id)
       }
 
@@ -44,7 +44,7 @@ describe RentalsController do
       must_respond_with :bad_request
 
       body = JSON.parse(response.body)
-      body.must_equal "errors" => "Out of Stock"
+      body.must_equal "errors"=>{"due_date"=>["can't be blank"] }
     end
 
     it "increases customer  movies_checked_out_count when a rental occurs" do
